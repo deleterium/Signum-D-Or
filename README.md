@@ -1,8 +1,8 @@
-# Signum D`Or
+# Signum D\`Or
 Decompiler, Optimizer and Recompiler for smart contracts on Signum Blockchain.
 
 # Usage
-Download project, open file signum-d-or.html in your browser or run it on gitpages.
+Download project, open file signum-d-or.html in your browser or [run it on gitpages](https://deleterium.github.io/Signum-D-Or/signum-d-or.html).
 
 # Project details
 ## Decompiler
