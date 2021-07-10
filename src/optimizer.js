@@ -225,7 +225,7 @@
             line1 = /^\s*(BZR|BNZ)\s+\$(\w+)\s+:(\w+)\s*$/.exec(value);
             if (line1 != null) {
                 line3 = /^\s*(\w+):\s*$/.exec(array[index+2]); //matches labels
-                if (line3 != null && line1[4] == line3[1]) {
+                if (line3 != null && line1[3] == line3[1]) {
                     line2 = /^\s*JMP\s+:(\w+)\s*$/.exec(array[index+1]);
                     if (line2 != null) {
 
