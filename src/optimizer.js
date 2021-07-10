@@ -159,6 +159,24 @@
                         }
                     }
                 }
+
+
+                //CLR @temp1
+                //BNE $temp0 $temp1 :lab_8d9
+                //  turns BNZ $temp0 :lab_8d9
+                line1 = /^\s*CLR\s+@(\w+)\s*$/.exec(value);
+                if (line1 != null) {
+                    line2 = /^\s*(BEQ|BNE)\s+\$(\w+)\s+\$(\w+)\s+:(\w+)\s*$/.exec(array[index+1])
+                    if (line2 != null && line1[1] == line2[3] ) {
+                        let instr;
+                        if (line2[1] == "BNE") instr="BNZ";
+                        else instr = "BZR";
+                        array[index] = instr + " $" + line2[2] + " :" + line2[4];
+                        array[index+1]="DELETE";
+                        optimized_lines++;
+                        return;
+                    }
+                }
             }
 
             //BNE $r0 $var37 :lab_f75
