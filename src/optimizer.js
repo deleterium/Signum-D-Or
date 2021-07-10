@@ -60,6 +60,12 @@
             }
             */
 
+            //do not analyze these values or compiler directives
+            if (value == "DELETE" || value == "" || /^\s*\^\w+(.*)/.exec(array[i]) != null) {
+                return;
+            }
+
+
             //Branches optimization! high gain, so come first!
             line1 = /^\s*SET\s+@(\w+)\s+\$(\w+)\s*$/.exec(value);
             if (line1 != null) {
@@ -611,7 +617,7 @@
                     return;
                 }
 
-
+                /* Specific for SmartC
                 //Optimize pointer operations with zero index
                 i=index;
                 while (++i<array.length-1) {
@@ -645,6 +651,7 @@
                         break;
                     }
                 }
+                */
             }
 
         });
