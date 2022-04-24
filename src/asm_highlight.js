@@ -45,6 +45,7 @@ function asm_highlight(txt) {
         [0x16,  9,  /^\s*MOD\s+@(\w+)\s+\$(\w+)\s*$/ ],
         [0x17,  9,  /^\s*SHL\s+@(\w+)\s+\$(\w+)\s*$/ ],
         [0x18,  9,  /^\s*SHR\s+@(\w+)\s+\$(\w+)\s*$/ ],
+        [0x19,  9,  /^\s*POW\s+@(\w+)\s+\$(\w+)\s*$/ ],                     // atv3 POW @var $var
         [0x1a,  5,  /^\s*(JMP)\s+:(\w+)\s*$/ ],                             // JMP :label
         [0x1b,  6,  /^\s*(BZR)\s+\$(\w+)\s+:(\w+)\s*$/ ],                   // BZR $var :label
         [0x1e,  6,  /^\s*(BNZ)\s+\$(\w+)\s+:(\w+)\s*$/ ],                   // BZR $var :label
@@ -59,7 +60,9 @@ function asm_highlight(txt) {
         [0x27,  5,  /^\s*STZ\s+\$(\w+)\s*$/ ],
         [0x28,  1,  /^\s*FIN\s*$/ ],
         [0x29,  1,  /^\s*STP\s*$/ ],
+        [0x2a,  1,  /^\s*SLP\s*$/ ],                                        // atv3 SLP
         [0x2b,  5,  /^\s*(ERR)\s+:(\w+)\s*$/ ],                             // ERR :label
+        [0x2c, 13,  /^\s*MDV\s+@(\w+)\s+\$(\w+)\s+\$(\w+)\s*$/ ],           // atv3 MDV @var $var $var
         [0x30,  1,  /^\s*PCS\s*$/ ],
         [0x32,  3,  /^\s*(FUN)\s+(\w+)\s*$/ ],
         [0x33,  7,  /^\s*(FUN)\s+(\w+)\s+\$(\w+)\s*$/ ],
@@ -124,6 +127,7 @@ function asm_highlight(txt) {
         [ 0x0203, "check_HASH160_A_with_B" ],
         [ 0x0204, "SHA256_A_to_B" ],
         [ 0x0205, "check_SHA256_A_with_B" ],
+        [ 0x0206, "Check_Sig_B_With_A" ],
         [ 0x0300, "get_Block_Timestamp" ],
         [ 0x0301, "get_Creation_Timestamp" ],
         [ 0x0302, "get_Last_Block_Timestamp" ],
@@ -136,14 +140,23 @@ function asm_highlight(txt) {
         [ 0x0309, "message_from_Tx_in_A_to_B" ],
         [ 0x030a, "B_to_Address_of_Tx_in_A" ],
         [ 0x030b, "B_to_Address_of_Creator" ],
+        [ 0x030c, "Get_Code_Hash_Id" ],
         [ 0x0400, "get_Current_Balance" ],
         [ 0x0401, "get_Previous_Balance" ],
         [ 0x0402, "send_to_Address_in_B" ],
         [ 0x0403, "send_All_to_Address_in_B" ],
         [ 0x0404, "send_Old_to_Address_in_B" ],
         [ 0x0405, "send_A_to_Address_in_B" ],
-        [ 0x0406, "add_Minutes_to_Timestamp" ]
-        ];
+        [ 0x0406, "add_Minutes_to_Timestamp" ],
+        [ 0x0407, "Get_Map_Value_Keys_In_A" ],
+        [ 0x0408, "Set_Map_Value_Keys_In_A" ],
+        [ 0x0409, "Issue_Asset" ],
+        [ 0x040a, "Mint_Asset" ],
+        [ 0x040b, "Distribute_To_Asset_Holders" ],
+        [ 0x040c, "Get_Asset_Holders_Count" ],
+        [ 0x040d, "Get_Activation_Fee" ],
+        [ 0x040e, "Put_Last_Block_GSig_In_A" ],
+    ];
 
     //Choose your colors
     var asmCommentColor = "green";
@@ -218,6 +231,7 @@ function asm_highlight(txt) {
                         case 0x16:
                         case 0x17:
                         case 0x18:
+                        case 0x19:
                             tmp_string = addSpanColorRegex(line[i],/\b\w{3}\b/,asmInstructionColor);
                             tmp_string = addSpanColor(tmp_string,"@",asmPropertyColor);
                             tmp_string = addSpanColor(tmp_string,"$",asmPropertyColor);
@@ -243,6 +257,7 @@ function asm_highlight(txt) {
                         case 0x13:
                         case 0x28:
                         case 0x29:
+                        case 0x2a:
                         case 0x30:
                         case 0x7f:
                             tmp_string = addSpanColorRegex(line[i],/\b\w{3}\b/,asmInstructionColor);
@@ -292,6 +307,13 @@ function asm_highlight(txt) {
                             tmp_string = addSpanColor(tmp_string,parts[1],asmInstructionColor);
                             tmp_string = addSpanColor(tmp_string,"$",asmPropertyColor);
                             tmp_string = addSpanColor(tmp_string,parts[4],asmLabelColor);
+                            ret += tmp_string;
+                            break;
+                        case 0x2c:
+                            tmp_string = addSpanColorRegex(line[i],/\b\w{3}\b/,asmInstructionColor);
+                            tmp_string = addSpanColor(tmp_string,"@",asmPropertyColor);
+                            tmp_string = addSpanColor(tmp_string,"$",asmPropertyColor);
+                            tmp_string = addSpanColorLast(tmp_string,"$",asmPropertyColor);
                             ret += tmp_string;
                             break;
                         case 0x32:

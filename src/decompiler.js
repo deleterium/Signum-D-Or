@@ -29,6 +29,7 @@ function decompiler(machinecode, JSONmap) {
             { op_code: 0x16, name: "MOD", size:  9, args_type: "II",  template:   "%1 @%2 $%3" },
             { op_code: 0x17, name: "SHL", size:  9, args_type: "II",  template:   "%1 @%2 $%3" },
             { op_code: 0x18, name: "SHR", size:  9, args_type: "II",  template:   "%1 @%2 $%3" },
+            { op_code: 0x19, name: 'POW', size:  9, args_type: "II",  template:   "%1 @%2 $%3"  },                   // atv3 POW @var $var
             { op_code: 0x1a, name: "JMP", size:  5, args_type: "J",   template:   "%1 :%2" },                             // JMP :label
             { op_code: 0x1b, name: "BZR", size:  6, args_type: "IB",  template:   "%1 $%2 :%3" },                   // BZR $var :label
             { op_code: 0x1e, name: "BNZ", size:  6, args_type: "IB",  template:   "%1 $%2 :%3" },                   // BZR $var :label
@@ -43,7 +44,9 @@ function decompiler(machinecode, JSONmap) {
             { op_code: 0x27, name: "STZ", size:  5, args_type: "I",   template:   "%1 $%2" },
             { op_code: 0x28, name: "FIN", size:  1, args_type: "",    template:   "%1" },
             { op_code: 0x29, name: "STP", size:  1, args_type: "",    template:   "%1" },
+            { op_code: 0x2a, name: 'SLP', size:  1, args_type: "",    template:   "%1" },
             { op_code: 0x2b, name: "ERR", size:  5, args_type: "J",   template:   "%1 :%2" },                             // ERR :label
+            { op_code: 0x2c, name: 'MDV', size: 13, args_type: "III", template:   "%1 @%2 $%3 $%4" },
             { op_code: 0x30, name: "PCS", size:  1, args_type: "",    template:   "%1" },
             { op_code: 0x32, name: "FUN", size:  3, args_type: "F",   template:   "%1 %2" },
             { op_code: 0x33, name: "FUN", size:  7, args_type: "FI",  template:   "%1 %2 $%3" },
@@ -104,6 +107,7 @@ function decompiler(machinecode, JSONmap) {
             { name: "check_HASH160_A_with_B", api_code: 0x0203, op_code: 0x35 },
             { name: "SHA256_A_to_B",          api_code: 0x0204, op_code: 0x32 },
             { name: "check_SHA256_A_with_B",  api_code: 0x0205, op_code: 0x35 },
+            { name: 'Check_Sig_B_With_A',     api_code: 0x0206, op_code: 0x35 },
             { name: "get_Block_Timestamp",       api_code: 0x0300, op_code: 0x35 },
             { name: "get_Creation_Timestamp",    api_code: 0x0301, op_code: 0x35 },
             { name: "get_Last_Block_Timestamp",  api_code: 0x0302, op_code: 0x35 },
@@ -116,13 +120,22 @@ function decompiler(machinecode, JSONmap) {
             { name: "message_from_Tx_in_A_to_B", api_code: 0x0309, op_code: 0x32 },
             { name: "B_to_Address_of_Tx_in_A",   api_code: 0x030a, op_code: 0x32 },
             { name: "B_to_Address_of_Creator",   api_code: 0x030b, op_code: 0x32 },
-            { name: "get_Current_Balance",      api_code: 0x0400, op_code: 0x35 },
-            { name: "get_Previous_Balance",     api_code: 0x0401, op_code: 0x35 },
-            { name: "send_to_Address_in_B",     api_code: 0x0402, op_code: 0x33 },
-            { name: "send_All_to_Address_in_B", api_code: 0x0403, op_code: 0x32 },
-            { name: "send_Old_to_Address_in_B", api_code: 0x0404, op_code: 0x32 },
-            { name: "send_A_to_Address_in_B",   api_code: 0x0405, op_code: 0x32 },
-            { name: "add_Minutes_to_Timestamp", api_code: 0x0406, op_code: 0x37 },
+            { name: 'Get_Code_Hash_Id',          api_code: 0x030c, op_code: 0x35 },
+            { name: "get_Current_Balance",         api_code: 0x0400, op_code: 0x35 },
+            { name: "get_Previous_Balance",        api_code: 0x0401, op_code: 0x35 },
+            { name: "send_to_Address_in_B",        api_code: 0x0402, op_code: 0x33 },
+            { name: "send_All_to_Address_in_B",    api_code: 0x0403, op_code: 0x32 },
+            { name: "send_Old_to_Address_in_B",    api_code: 0x0404, op_code: 0x32 },
+            { name: "send_A_to_Address_in_B",      api_code: 0x0405, op_code: 0x32 },
+            { name: "add_Minutes_to_Timestamp",    api_code: 0x0406, op_code: 0x37 },
+            { name: 'Get_Map_Value_Keys_In_A',     api_code: 0x0407, op_code: 0x35 },
+            { name: 'Set_Map_Value_Keys_In_A',     api_code: 0x0408, op_code: 0x32 },
+            { name: 'Issue_Asset',                 api_code: 0x0409, op_code: 0x35 },
+            { name: 'Mint_Asset',                  api_code: 0x040a, op_code: 0x32 },
+            { name: 'Distribute_To_Asset_Holders', api_code: 0x040b, op_code: 0x32 },
+            { name: 'Get_Asset_Holders_Count',     api_code: 0x040c, op_code: 0x35 },
+            { name: 'Get_Activation_Fee',          api_code: 0x040d, op_code: 0x35 },
+            { name: 'Put_Last_Block_GSig_In_A',    api_code: 0x040e, op_code: 0x32 }
         ],
     };
 

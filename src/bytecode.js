@@ -39,6 +39,7 @@ function bytecode(assembly_source) {
             { op_code: 0x16, name: "MOD_DAT", size:  9, args_type: "II",  regex:   /^\s*MOD\s+@(\w+)\s+\$(\w+)\s*$/  },
             { op_code: 0x17, name: "SHL_DAT", size:  9, args_type: "II",  regex:   /^\s*SHL\s+@(\w+)\s+\$(\w+)\s*$/  },
             { op_code: 0x18, name: "SHR_DAT", size:  9, args_type: "II",  regex:   /^\s*SHR\s+@(\w+)\s+\$(\w+)\s*$/  },
+            { op_code: 0x19, name: 'POW_DAT', size:  9, args_type: "II",  regex:   /^\s*POW\s+@(\w+)\s+\$(\w+)\s*$/  },                   // atv3 POW @var $var
             { op_code: 0x1a, name: "JMP_ADR", size:  5, args_type: "J",   regex:   /^\s*JMP\s+:(\w+)\s*$/  },                             // JMP :label
             { op_code: 0x1b, name: "BZR_DAT", size:  6, args_type: "IB",  regex:   /^\s*BZR\s+\$(\w+)\s+:(\w+)\s*$/  },                   // BZR $var :label
             { op_code: 0x1e, name: "BNZ_DAT", size:  6, args_type: "IB",  regex:   /^\s*BNZ\s+\$(\w+)\s+:(\w+)\s*$/  },                   // BZR $var :label
@@ -53,7 +54,9 @@ function bytecode(assembly_source) {
             { op_code: 0x27, name: "STZ_DAT", size:  5, args_type: "I",   regex:   /^\s*STZ\s+\$(\w+)\s*$/  },
             { op_code: 0x28, name: "FIN_IMD", size:  1, args_type: "",    regex:   /^\s*FIN\s*$/  },
             { op_code: 0x29, name: "STP_IMD", size:  1, args_type: "",    regex:   /^\s*STP\s*$/  },
+            { op_code: 0x2a, name: 'SLP_IMD', size:  1, args_type: "",    regex:   /^\s*SLP\s*$/  },
             { op_code: 0x2b, name: "ERR_ADR", size:  5, args_type: "J",   regex:   /^\s*ERR\s+:(\w+)\s*$/  },                             // ERR :label
+            { op_code: 0x2c, name: 'MDV_DAT', size: 13, args_type: "III", regex:   /^\s*MDV\s+@(\w+)\s+\$(\w+)\s+\$(\w+)\s*$/ },          // atv3 MDV @var $var $var
             { op_code: 0x30, name: "SET_PCS", size:  1, args_type: "",    regex:   /^\s*PCS\s*$/  },
             { op_code: 0x32, name: "EXT_FUN", size:  3, args_type: "F",   regex:   /^\s*FUN\s+(\w+)\s*$/  },
             { op_code: 0x33, name: "EXT_FUN_DAT", size: 7, args_type: "FI", regex:   /^\s*FUN\s+(\w+)\s+\$(\w+)\s*$/  },
@@ -114,6 +117,7 @@ function bytecode(assembly_source) {
             { name: "check_HASH160_A_with_B", api_code: 0x0203, op_code: 0x35 },
             { name: "SHA256_A_to_B",          api_code: 0x0204, op_code: 0x32 },
             { name: "check_SHA256_A_with_B",  api_code: 0x0205, op_code: 0x35 },
+            { name: 'Check_Sig_B_With_A',     api_code: 0x0206, op_code: 0x35 },
             { name: "get_Block_Timestamp",       api_code: 0x0300, op_code: 0x35 },
             { name: "get_Creation_Timestamp",    api_code: 0x0301, op_code: 0x35 },
             { name: "get_Last_Block_Timestamp",  api_code: 0x0302, op_code: 0x35 },
@@ -126,13 +130,22 @@ function bytecode(assembly_source) {
             { name: "message_from_Tx_in_A_to_B", api_code: 0x0309, op_code: 0x32 },
             { name: "B_to_Address_of_Tx_in_A",   api_code: 0x030a, op_code: 0x32 },
             { name: "B_to_Address_of_Creator",   api_code: 0x030b, op_code: 0x32 },
-            { name: "get_Current_Balance",      api_code: 0x0400, op_code: 0x35 },
-            { name: "get_Previous_Balance",     api_code: 0x0401, op_code: 0x35 },
-            { name: "send_to_Address_in_B",     api_code: 0x0402, op_code: 0x33 },
-            { name: "send_All_to_Address_in_B", api_code: 0x0403, op_code: 0x32 },
-            { name: "send_Old_to_Address_in_B", api_code: 0x0404, op_code: 0x32 },
-            { name: "send_A_to_Address_in_B",   api_code: 0x0405, op_code: 0x32 },
-            { name: "add_Minutes_to_Timestamp", api_code: 0x0406, op_code: 0x37 },
+            { name: 'Get_Code_Hash_Id',          api_code: 0x030c, op_code: 0x35 },
+            { name: "get_Current_Balance",         api_code: 0x0400, op_code: 0x35 },
+            { name: "get_Previous_Balance",        api_code: 0x0401, op_code: 0x35 },
+            { name: "send_to_Address_in_B",        api_code: 0x0402, op_code: 0x33 },
+            { name: "send_All_to_Address_in_B",    api_code: 0x0403, op_code: 0x32 },
+            { name: "send_Old_to_Address_in_B",    api_code: 0x0404, op_code: 0x32 },
+            { name: "send_A_to_Address_in_B",      api_code: 0x0405, op_code: 0x32 },
+            { name: "add_Minutes_to_Timestamp",    api_code: 0x0406, op_code: 0x37 },
+            { name: 'Get_Map_Value_Keys_In_A',     api_code: 0x0407, op_code: 0x35 },
+            { name: 'Set_Map_Value_Keys_In_A',     api_code: 0x0408, op_code: 0x32 },
+            { name: 'Issue_Asset',                 api_code: 0x0409, op_code: 0x35 },
+            { name: 'Mint_Asset',                  api_code: 0x040a, op_code: 0x32 },
+            { name: 'Distribute_To_Asset_Holders', api_code: 0x040b, op_code: 0x32 },
+            { name: 'Get_Asset_Holders_Count',     api_code: 0x040c, op_code: 0x35 },
+            { name: 'Get_Activation_Fee',          api_code: 0x040d, op_code: 0x35 },
+            { name: 'Put_Last_Block_GSig_In_A',    api_code: 0x040e, op_code: 0x32 }
         ],
     };
 
