@@ -131,6 +131,7 @@ function bytecode(assembly_source) {
             { name: "B_to_Address_of_Tx_in_A",   api_code: 0x030a, op_code: 0x32 },
             { name: "B_to_Address_of_Creator",   api_code: 0x030b, op_code: 0x32 },
             { name: 'Get_Code_Hash_Id',          api_code: 0x030c, op_code: 0x35 },
+            { name: 'B_To_Assets_Of_Tx_In_A',    api_code: 0x030d, op_code: 0x35 },
             { name: "get_Current_Balance",         api_code: 0x0400, op_code: 0x35 },
             { name: "get_Previous_Balance",        api_code: 0x0401, op_code: 0x35 },
             { name: "send_to_Address_in_B",        api_code: 0x0402, op_code: 0x33 },
@@ -145,7 +146,9 @@ function bytecode(assembly_source) {
             { name: 'Distribute_To_Asset_Holders', api_code: 0x040b, op_code: 0x32 },
             { name: 'Get_Asset_Holders_Count',     api_code: 0x040c, op_code: 0x35 },
             { name: 'Get_Activation_Fee',          api_code: 0x040d, op_code: 0x35 },
-            { name: 'Put_Last_Block_GSig_In_A',    api_code: 0x040e, op_code: 0x32 }
+            { name: 'Put_Last_Block_GSig_In_A',    api_code: 0x040e, op_code: 0x32 },
+            { name: 'Get_Asset_Circulating',       api_code: 0x040f, op_code: 0x35 },
+            { name: 'Get_Account_Balance',         api_code: 0x0410, op_code: 0x35 }
         ],
     };
 

@@ -141,6 +141,7 @@ function asm_highlight(txt) {
         [ 0x030a, "B_to_Address_of_Tx_in_A" ],
         [ 0x030b, "B_to_Address_of_Creator" ],
         [ 0x030c, "Get_Code_Hash_Id" ],
+        [ 0x030d, "B_To_Assets_Of_Tx_In_A" ],
         [ 0x0400, "get_Current_Balance" ],
         [ 0x0401, "get_Previous_Balance" ],
         [ 0x0402, "send_to_Address_in_B" ],
@@ -156,6 +157,8 @@ function asm_highlight(txt) {
         [ 0x040c, "Get_Asset_Holders_Count" ],
         [ 0x040d, "Get_Activation_Fee" ],
         [ 0x040e, "Put_Last_Block_GSig_In_A" ],
+        [ 0x040f, "Get_Asset_Circulating" ],
+        [ 0x0410, "Get_Account_Balance" ]
     ];
 
     //Choose your colors
